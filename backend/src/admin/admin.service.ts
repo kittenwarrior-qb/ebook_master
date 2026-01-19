@@ -26,8 +26,11 @@ export class AdminService {
   ): Promise<{ success: boolean; book_id: number; pages_imported: number }> {
     // Save PDF temporarily
     const tempDir = path.join(process.cwd(), 'temp');
-    const tempPdfPath = path.join(tempDir, `${Date.now()}-${file.originalname}`);
-    
+    const tempPdfPath = path.join(
+      tempDir,
+      `${Date.now()}-${file.originalname}`,
+    );
+
     try {
       // Ensure temp directory exists
       if (!fs.existsSync(tempDir)) {

@@ -3,7 +3,7 @@ import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 @Injectable()
 export class PdfFileValidationPipe implements PipeTransform {
   transform(value: Express.Multer.File) {
-    const maxSize = 50 * 1024 * 1024; // 50MB
+    const maxSize = 500 * 1024 * 1024; // 500MB
     const allowedMimeTypes = ['application/pdf'];
 
     if (!value) {
@@ -15,7 +15,7 @@ export class PdfFileValidationPipe implements PipeTransform {
     }
 
     if (value.size > maxSize) {
-      throw new BadRequestException('File size exceeds 50MB limit');
+      throw new BadRequestException('File size exceeds 500MB limit');
     }
 
     return value;
@@ -26,14 +26,21 @@ export class PdfFileValidationPipe implements PipeTransform {
 export class AudioFileValidationPipe implements PipeTransform {
   transform(value: Express.Multer.File) {
     const maxSize = 100 * 1024 * 1024; // 100MB for audio
-    const allowedMimeTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg'];
+    const allowedMimeTypes = [
+      'audio/mpeg',
+      'audio/mp3',
+      'audio/wav',
+      'audio/ogg',
+    ];
 
     if (!value) {
       throw new BadRequestException('Audio file is required');
     }
 
     if (!allowedMimeTypes.includes(value.mimetype)) {
-      throw new BadRequestException('Only MP3, WAV, or OGG audio files are allowed');
+      throw new BadRequestException(
+        'Only MP3, WAV, or OGG audio files are allowed',
+      );
     }
 
     if (value.size > maxSize) {

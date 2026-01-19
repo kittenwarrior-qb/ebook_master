@@ -28,7 +28,12 @@ export class Page {
   @Column({ name: 'cloudinary_public_id', type: 'varchar', length: 255 })
   cloudinaryPublicId: string;
 
-  @Column({ name: 'image_format', type: 'varchar', length: 10, default: 'jpeg' })
+  @Column({
+    name: 'image_format',
+    type: 'varchar',
+    length: 10,
+    default: 'jpeg',
+  })
   imageFormat: string;
 
   @CreateDateColumn({ name: 'created_at' })

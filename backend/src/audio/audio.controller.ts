@@ -7,7 +7,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiProduces } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiProduces,
+} from '@nestjs/swagger';
 import { AudioService } from './audio.service';
 
 @ApiTags('audio')
@@ -16,7 +22,10 @@ export class AudioController {
   constructor(private readonly audioService: AudioService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get audio file for a book', description: 'Stream the audio file associated with a book' })
+  @ApiOperation({
+    summary: 'Get audio file for a book',
+    description: 'Stream the audio file associated with a book',
+  })
   @ApiParam({ name: 'bookId', type: 'integer', description: 'Book ID' })
   @ApiProduces('audio/mpeg', 'audio/wav', 'audio/ogg')
   @ApiResponse({ status: 200, description: 'Audio file stream' })

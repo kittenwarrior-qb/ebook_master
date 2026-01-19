@@ -7,7 +7,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiProduces } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiProduces,
+} from '@nestjs/swagger';
 import { PagesService } from './pages.service';
 
 @ApiTags('books')
@@ -16,7 +22,10 @@ export class PagesController {
   constructor(private readonly pagesService: PagesService) {}
 
   @Get(':pageNumber')
-  @ApiOperation({ summary: 'Get page image', description: 'Retrieve a specific page image from a book' })
+  @ApiOperation({
+    summary: 'Get page image',
+    description: 'Retrieve a specific page image from a book',
+  })
   @ApiParam({ name: 'bookId', type: 'integer', description: 'Book ID' })
   @ApiParam({ name: 'pageNumber', type: 'integer', description: 'Page number' })
   @ApiProduces('image/jpeg', 'image/png')

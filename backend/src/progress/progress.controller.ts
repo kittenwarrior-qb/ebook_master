@@ -7,7 +7,14 @@ import {
   ParseIntPipe,
   Headers,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiParam, ApiBody, ApiResponse, ApiHeader } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiParam,
+  ApiBody,
+  ApiResponse,
+  ApiHeader,
+} from '@nestjs/swagger';
 import { ProgressService } from './progress.service';
 import { SaveProgressDto } from './dto/save-progress.dto';
 import { ProgressResponseDto } from './dto/progress-response.dto';
@@ -25,14 +32,27 @@ export class ProgressController {
   }
 
   @Get(':bookId')
-  @ApiOperation({ summary: 'Get reading progress', description: 'Get the reading progress for a specific book' })
+  @ApiOperation({
+    summary: 'Get reading progress',
+    description: 'Get the reading progress for a specific book',
+  })
   @ApiParam({ name: 'bookId', type: 'integer', description: 'Book ID' })
-  @ApiHeader({ name: 'x-session-id', required: false, description: 'Session ID for tracking user progress' })
-  @ApiResponse({ status: 200, description: 'Reading progress', type: ProgressResponseDto })
+  @ApiHeader({
+    name: 'x-session-id',
+    required: false,
+    description: 'Session ID for tracking user progress',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Reading progress',
+    type: ProgressResponseDto,
+  })
   async getProgress(
     @Param('bookId', ParseIntPipe) bookId: number,
     @Headers() headers: any,
-  ): Promise<ProgressResponseDto | { book_id: number; last_page_number: number }> {
+  ): Promise<
+    ProgressResponseDto | { book_id: number; last_page_number: number }
+  > {
     const userId = this.getUserId(headers);
     const progress = await this.progressService.getProgress(userId, bookId);
 
@@ -48,11 +68,22 @@ export class ProgressController {
   }
 
   @Post(':bookId')
-  @ApiOperation({ summary: 'Save reading progress', description: 'Save the current reading progress for a book' })
+  @ApiOperation({
+    summary: 'Save reading progress',
+    description: 'Save the current reading progress for a book',
+  })
   @ApiParam({ name: 'bookId', type: 'integer', description: 'Book ID' })
-  @ApiHeader({ name: 'x-session-id', required: false, description: 'Session ID for tracking user progress' })
+  @ApiHeader({
+    name: 'x-session-id',
+    required: false,
+    description: 'Session ID for tracking user progress',
+  })
   @ApiBody({ type: SaveProgressDto })
-  @ApiResponse({ status: 200, description: 'Progress saved successfully', schema: { example: { success: true } } })
+  @ApiResponse({
+    status: 200,
+    description: 'Progress saved successfully',
+    schema: { example: { success: true } },
+  })
   async saveProgress(
     @Param('bookId', ParseIntPipe) bookId: number,
     @Body() saveProgressDto: SaveProgressDto,
@@ -63,9 +94,20 @@ export class ProgressController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all reading progress', description: 'Get reading progress for all books for the current user' })
-  @ApiHeader({ name: 'x-session-id', required: false, description: 'Session ID for tracking user progress' })
-  @ApiResponse({ status: 200, description: 'List of reading progress', type: [ProgressResponseDto] })
+  @ApiOperation({
+    summary: 'Get all reading progress',
+    description: 'Get reading progress for all books for the current user',
+  })
+  @ApiHeader({
+    name: 'x-session-id',
+    required: false,
+    description: 'Session ID for tracking user progress',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of reading progress',
+    type: [ProgressResponseDto],
+  })
   async getAllProgress(
     @Headers() headers: any,
   ): Promise<ProgressResponseDto[]> {

@@ -4,7 +4,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true,
+    rawBody: true,
+  });
 
   // Enable CORS
   app.enableCors({
@@ -29,15 +32,20 @@ async function bootstrap() {
     .addTag('books', 'Book management endpoints')
     .addTag('admin', 'Admin endpoints for uploading content')
     .addTag('audio', 'Audio file endpoints')
-    .addApiKey({ type: 'apiKey', name: 'x-admin-key', in: 'header' }, 'admin-key')
+    .addApiKey(
+      { type: 'apiKey', name: 'x-admin-key', in: 'header' },
+      'admin-key',
+    )
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
   const port = process.env.PORT || 3001;
   await app.listen(port);
   console.log(`🚀 Ebook Master Backend running on http://localhost:${port}`);
-  console.log(`📚 Swagger documentation available at http://localhost:${port}/api`);
+  console.log(
+    `📚 Swagger documentation available at http://localhost:${port}/api`,
+  );
 }
-bootstrap();
+void bootstrap();

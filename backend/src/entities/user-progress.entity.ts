@@ -25,7 +25,11 @@ export class UserProgress {
   @Column({ name: 'last_page_number', type: 'integer' })
   lastPageNumber: number;
 
-  @Column({ name: 'last_accessed_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    name: 'last_accessed_at',
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   lastAccessedAt: Date;
 
   @CreateDateColumn({ name: 'created_at' })
