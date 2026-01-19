@@ -150,24 +150,26 @@ function BookViewer() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-4 md:space-y-6">
       {/* Header */}
       <div>
         <Button
           variant="ghost"
           onClick={() => navigate('/')}
-          className="mb-4"
+          className="mb-3 md:mb-4 -ml-2"
+          size="sm"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          <span className="hidden sm:inline">Back to Home</span>
+          <span className="sm:hidden">Back</span>
         </Button>
-        <h1 className="text-3xl font-display font-bold">{book.title}</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-display font-bold line-clamp-2">{book.title}</h1>
       </div>
 
       {/* Audio Player */}
       {book.hasListening && bookId && (
         <Card>
-          <CardContent className="pt-6">
+          <CardContent className="pt-4 md:pt-6">
             <AudioPlayer bookId={parseInt(bookId)} />
           </CardContent>
         </Card>
@@ -175,39 +177,43 @@ function BookViewer() {
 
       {/* Navigation Controls */}
       <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+        <CardContent className="pt-4 md:pt-6">
+          <div className="flex items-center justify-between gap-2 md:gap-4 flex-wrap">
             <Button
               onClick={handlePrevious}
               disabled={currentPage === 1}
               variant="outline"
-              size="lg"
+              size="default"
+              className="flex-shrink-0"
             >
-              <ChevronLeft className="mr-2 h-4 w-4" />
-              Previous
+              <ChevronLeft className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Previous</span>
+              <span className="sm:hidden">Prev</span>
             </Button>
 
-            <form onSubmit={handlePageInputSubmit} className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Page</span>
+            <form onSubmit={handlePageInputSubmit} className="flex items-center gap-1.5 md:gap-2">
+              <span className="text-xs md:text-sm text-muted-foreground">Page</span>
               <input
                 type="number"
                 value={pageInput}
                 onChange={handlePageInputChange}
-                className="w-20 px-3 py-2 border border-input rounded-md text-center bg-background"
+                className="w-14 md:w-20 px-2 md:px-3 py-1.5 md:py-2 text-sm md:text-base border border-input rounded-md text-center bg-background"
                 min={1}
                 max={book.totalPages}
               />
-              <span className="text-sm text-muted-foreground">of {book.totalPages}</span>
+              <span className="text-xs md:text-sm text-muted-foreground">of {book.totalPages}</span>
             </form>
 
             <Button
               onClick={handleNext}
               disabled={currentPage === book.totalPages}
               variant="outline"
-              size="lg"
+              size="default"
+              className="flex-shrink-0"
             >
-              Next
-              <ChevronRight className="ml-2 h-4 w-4" />
+              <span className="hidden sm:inline">Next</span>
+              <span className="sm:hidden">Next</span>
+              <ChevronRight className="ml-1 md:ml-2 h-4 w-4" />
             </Button>
           </div>
         </CardContent>
@@ -215,10 +221,10 @@ function BookViewer() {
 
       {/* Page Display */}
       <Card>
-        <CardContent className="p-4">
+        <CardContent className="p-2 md:p-4">
           <div className="relative">
             {imageLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-muted">
+              <div className="absolute inset-0 flex items-center justify-center bg-muted rounded-md">
                 <LoadingSpinner count={1} />
               </div>
             )}
@@ -237,7 +243,7 @@ function BookViewer() {
       </Card>
 
       {/* Keyboard shortcuts hint */}
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-xs md:text-sm text-muted-foreground pb-4">
         Use arrow keys (← →) to navigate between pages
       </p>
     </div>

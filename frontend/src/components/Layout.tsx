@@ -19,7 +19,7 @@ function Layout({ children }: LayoutProps) {
                 to="/" 
                 className="text-gray-700 hover:text-blue-600 font-medium"
               >
-                Trang Chủ
+                Home
               </Link>
               <Link 
                 to="/admin" 

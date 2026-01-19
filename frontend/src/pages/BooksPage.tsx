@@ -32,17 +32,19 @@ function BooksPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-display font-bold">Sách học TOEIC</h1>
-        <LoadingSpinner count={8} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" />
+      <div className="space-y-4 md:space-y-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-display font-bold">TOEIC Books</h1>
+        </div>
+        <LoadingSpinner count={8} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="space-y-6">
-        <h1 className="text-3xl font-display font-bold">Sách học TOEIC</h1>
+      <div className="space-y-4 md:space-y-6">
+        <h1 className="text-2xl md:text-3xl font-display font-bold">TOEIC Books</h1>
         <div className="text-center py-12 space-y-4">
           <ErrorMessage message={error} />
           <Button onClick={fetchBooks}>Retry</Button>
@@ -52,41 +54,27 @@ function BooksPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-3xl font-display font-bold mb-2">Sách học TOEIC</h1>
-        <p className="text-muted-foreground">
-          Khám phá bộ sưu tập sách học TOEIC của chúng tôi
+        <h1 className="text-2xl md:text-3xl font-display font-bold mb-1 md:mb-2">Digital Books</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Explore our diverse collection of digital books
         </p>
       </div>
 
-      {/* Placeholder for future filter section */}
-      {/* <Card>
-        <CardContent className="pt-6">
-          <p className="text-sm text-muted-foreground">Filter options coming soon...</p>
-        </CardContent>
-      </Card> */}
-
       {books.length === 0 ? (
         <Card>
-          <CardContent className="pt-6 text-center text-muted-foreground">
-            Chưa có sách nào được thêm vào.
+          <CardContent className="pt-6 text-center text-muted-foreground py-12">
+            No books have been added yet.
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
           {books.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
         </div>
       )}
-
-      {/* Placeholder for pagination */}
-      {/* {books.length > 0 && (
-        <div className="flex justify-center">
-          <p className="text-sm text-muted-foreground">Pagination coming soon...</p>
-        </div>
-      )} */}
     </div>
   );
 }

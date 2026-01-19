@@ -57,39 +57,39 @@ function HomePage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 md:space-y-8">
       {/* Hero Section */}
-      <Card className="border-none shadow-none bg-gradient-to-r from-primary/10 to-primary/5">
-        <CardHeader className="text-center space-y-2">
-          <CardTitle className="text-4xl font-display">
-            Welcome to TOEIC Learning Platform
+      <Card className="border-none shadow-none bg-linear-to-r from-primary/10 to-primary/5">
+        <CardHeader className="text-center space-y-2 py-8 md:py-12">
+          <CardTitle className="text-2xl md:text-3xl lg:text-4xl font-display">
+            Welcome to Ebook Master
           </CardTitle>
-          <CardDescription className="text-lg">
-            Master English with our comprehensive collection of books and practice tests
+          <CardDescription className="text-base md:text-lg max-w-2xl mx-auto">
+            Your comprehensive digital library for learning and growth
           </CardDescription>
         </CardHeader>
       </Card>
 
       {/* Tabbed Content */}
       <Tabs defaultValue="books" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-          <TabsTrigger value="books">
-            Sách học ({books.length})
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-auto">
+          <TabsTrigger value="books" className="py-3">
+            📚 Books ({books.length})
           </TabsTrigger>
-          <TabsTrigger value="tests">
-            Bài test ({tests.length})
+          <TabsTrigger value="tests" className="py-3">
+            📝 Tests ({tests.length})
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="books" className="mt-6">
           {books.length === 0 ? (
             <Card>
-              <CardContent className="pt-6 text-center text-muted-foreground">
-                Chưa có sách nào được thêm vào.
+              <CardContent className="pt-6 text-center text-muted-foreground py-12">
+                <p className="text-lg">No books have been added yet.</p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
               {books.map((book) => (
                 <BookCard key={book.id} book={book} />
               ))}
@@ -100,12 +100,12 @@ function HomePage() {
         <TabsContent value="tests" className="mt-6">
           {tests.length === 0 ? (
             <Card>
-              <CardContent className="pt-6 text-center text-muted-foreground">
-                Chưa có bài test nào được thêm vào.
+              <CardContent className="pt-6 text-center text-muted-foreground py-12">
+                <p className="text-lg">No tests have been added yet.</p>
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
               {tests.map((test) => (
                 <BookCard key={test.id} book={test} />
               ))}

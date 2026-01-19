@@ -10,7 +10,7 @@ interface BookCardProps {
 function BookCard({ book }: BookCardProps) {
   return (
     <Link to={`/book/${book.id}`} className="block group">
-      <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+      <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] h-full">
         <div className="aspect-3/4 bg-muted relative overflow-hidden">
           <img
             src={book.thumbnailUrl}
@@ -21,14 +21,16 @@ function BookCard({ book }: BookCardProps) {
               e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="300"%3E%3Crect fill="%23ddd" width="200" height="300"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3ENo Image%3C/text%3E%3C/svg%3E';
             }}
           />
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary">Book</Badge>
+          <div className="absolute top-1.5 left-1.5 md:top-2 md:left-2">
+            <Badge variant="secondary" className="text-xs">
+              {book.category === 'test' ? '📝' : '📚'}
+            </Badge>
           </div>
           {book.hasListening && (
-            <div className="absolute top-2 right-2">
-              <Badge className="bg-primary text-primary-foreground">
+            <div className="absolute top-1.5 right-1.5 md:top-2 md:right-2">
+              <Badge className="bg-primary text-primary-foreground text-xs">
                 <svg
-                  className="w-3 h-3 mr-1"
+                  className="w-3 h-3 mr-0.5"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -39,19 +41,19 @@ function BookCard({ book }: BookCardProps) {
                     clipRule="evenodd"
                   />
                 </svg>
-                Listening
+                <span className="hidden sm:inline">Audio</span>
               </Badge>
             </div>
           )}
         </div>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base line-clamp-2 font-display">
+        <CardHeader className="pb-2 px-3 md:px-4 pt-3 md:pt-4">
+          <CardTitle className="text-sm md:text-base line-clamp-2 font-display leading-tight">
             {book.title}
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0">
-          <p className="text-sm text-muted-foreground">
-            {book.totalPages} trang
+        <CardContent className="pt-0 px-3 md:px-4 pb-3 md:pb-4">
+          <p className="text-xs md:text-sm text-muted-foreground">
+            {book.totalPages} pages
           </p>
         </CardContent>
       </Card>

@@ -41,8 +41,6 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processingStep, setProcessingStep] = useState('');
-  const [_currentBookId, setCurrentBookId] = useState<number | null>(null);
-  const [_isPolling, setIsPolling] = useState(false);
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +48,7 @@ export default function AdminPage() {
       setIsAuthenticated(true);
       setAuthError('');
     } else {
-      setAuthError('❌ Mật khẩu không đúng!');
+      setAuthError('❌ Incorrect password!');
     }
   };
 
@@ -62,13 +60,13 @@ export default function AdminPage() {
           <form onSubmit={handlePasswordSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">
-                Nhập mật khẩu Admin
+                Enter Admin Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Nhập mật khẩu..."
+                placeholder="Enter password..."
                 className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 autoFocus
               />
@@ -82,11 +80,11 @@ export default function AdminPage() {
               type="submit"
               className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 font-medium"
             >
-              Xác thực
+              Authenticate
             </button>
           </form>
           <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
-            💡 Liên hệ quản trị viên để lấy mật khẩu
+            💡 Contact administrator to get password
           </div>
         </div>
       </div>
@@ -94,7 +92,6 @@ export default function AdminPage() {
   }
 
   const pollBookStatus = async (bookId: number) => {
-    setIsPolling(true);
     const pollInterval = setInterval(async () => {
       try {
         const response = await axios.get<BookStatusResponse>(
@@ -108,9 +105,8 @@ export default function AdminPage() {
 
         if (status === 'completed') {
           clearInterval(pollInterval);
-          setIsPolling(false);
           setMessage(
-            `✅ Upload thành công! Book ID: ${bookId}, Số trang: ${total_pages}`
+            `✅ Upload successful! Book ID: ${bookId}, Pages: ${total_pages}`
           );
           setUploading(false);
           setTimeout(() => {
@@ -119,8 +115,7 @@ export default function AdminPage() {
           }, 3000);
         } else if (status === 'failed') {
           clearInterval(pollInterval);
-          setIsPolling(false);
-          setError(`❌ Lỗi xử lý: ${message}`);
+          setError(`❌ Processing error: ${message}`);
           setUploading(false);
           setProcessingStep('');
           setUploadProgress(0);
@@ -135,7 +130,7 @@ export default function AdminPage() {
     e.preventDefault();
     
     if (!pdfFile || !title) {
-      setError('Vui lòng chọn file PDF và nhập tên sách');
+      setError('Please select a PDF file and enter book title');
       return;
     }
 
@@ -143,7 +138,7 @@ export default function AdminPage() {
     setMessage('');
     setError('');
     setUploadProgress(0);
-    setProcessingStep('Đang chuẩn bị upload...');
+    setProcessingStep('Preparing upload...');
 
     try {
       const formData = new FormData();
@@ -152,7 +147,7 @@ export default function AdminPage() {
       formData.append('category', category);
       formData.append('hasListening', hasListening.toString());
 
-      setProcessingStep('📤 Đang upload file PDF lên server...');
+      setProcessingStep('📤 Uploading PDF file to server...');
 
       const response = await axios.post<UploadResponse>(
         `${API_URL}/api/admin/upload-book`,
@@ -168,20 +163,19 @@ export default function AdminPage() {
               );
               setUploadProgress(percentCompleted);
               if (percentCompleted < 100) {
-                setProcessingStep(`📤 Đang upload: ${percentCompleted}%`);
+                setProcessingStep(`📤 Uploading: ${percentCompleted}%`);
               } else {
-                setProcessingStep('⚙️ Đang xử lý PDF và chuyển đổi thành ảnh...');
+                setProcessingStep('⚙️ Processing PDF and converting to images...');
               }
             }
           },
         }
       );
 
-      setProcessingStep('⚙️ Đang xử lý PDF và chuyển đổi thành ảnh...');
+      setProcessingStep('⚙️ Processing PDF and converting to images...');
       setUploadProgress(100);
 
       // Start polling for status
-      setCurrentBookId(response.data.book_id);
       pollBookStatus(response.data.book_id);
 
       // Reset form
@@ -198,7 +192,7 @@ export default function AdminPage() {
       const error = err as { response?: { data?: { message?: string } }; message?: string };
       setProcessingStep('');
       setError(
-        `❌ Lỗi: ${error.response?.data?.message || error.message || 'Unknown error'}`
+        `❌ Error: ${error.response?.data?.message || error.message || 'Unknown error'}`
       );
       setUploading(false);
       setUploadProgress(0);
@@ -209,7 +203,7 @@ export default function AdminPage() {
     e.preventDefault();
     
     if (!audioFile || !bookIdForAudio) {
-      setError('Vui lòng chọn file audio và nhập Book ID');
+      setError('Please select audio file and enter Book ID');
       return;
     }
 
@@ -233,7 +227,7 @@ export default function AdminPage() {
       );
 
       setMessage(
-        `✅ Upload audio thành công! Audio ID: ${response.data.audio_id}`
+        `✅ Audio upload successful! Audio ID: ${response.data.audio_id}`
       );
       
       // Reset form
@@ -247,7 +241,7 @@ export default function AdminPage() {
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } }; message?: string };
       setError(
-        `❌ Lỗi: ${error.response?.data?.message || error.message || 'Unknown error'}`
+        `❌ Error: ${error.response?.data?.message || error.message || 'Unknown error'}`
       );
     } finally {
       setUploadingAudio(false);
@@ -257,12 +251,12 @@ export default function AdminPage() {
   return (
     <div className="max-w-4xl mx-auto p-6">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Admin Panel - Upload Sách</h1>
+        <h1 className="text-3xl font-bold">Admin Panel - Upload Books</h1>
         <a
           href="/admin/books"
           className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
         >
-          📚 Quản Lý Sách
+          📚 Manage Books
         </a>
       </div>
 
@@ -297,9 +291,9 @@ export default function AdminPage() {
           </div>
           <div className="mt-2 text-xs text-gray-600">
             {uploadProgress < 100 ? (
-              <p>⏳ Vui lòng đợi, đang xử lý file...</p>
+              <p>⏳ Please wait, processing file...</p>
             ) : (
-              <p>⚙️ Đang xử lý PDF, có thể mất vài phút...</p>
+              <p>⚙️ Processing PDF, may take a few minutes...</p>
             )}
           </div>
         </div>
@@ -311,7 +305,7 @@ export default function AdminPage() {
         <form onSubmit={handlePdfUpload} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-2">
-              File PDF *
+              PDF File *
             </label>
             <input
               id="pdf-input"
@@ -323,20 +317,20 @@ export default function AdminPage() {
             />
             {pdfFile && (
               <p className="text-sm text-gray-600 mt-1">
-                Đã chọn: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
+                Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Tên Sách *
+              Book Title *
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="VD: Hackers TOEIC Reading"
+              placeholder="e.g. Hackers TOEIC Reading"
               className="w-full p-2 border border-gray-300 rounded"
               disabled={uploading}
             />
@@ -344,7 +338,7 @@ export default function AdminPage() {
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              Danh Mục *
+              Category *
             </label>
             <select
               value={category}
@@ -352,8 +346,8 @@ export default function AdminPage() {
               className="w-full p-2 border border-gray-300 rounded"
               disabled={uploading}
             >
-              <option value="book">Sách (Book)</option>
-              <option value="test">Đề Thi (Test)</option>
+              <option value="book">Book</option>
+              <option value="test">Test</option>
             </select>
           </div>
 
@@ -367,7 +361,7 @@ export default function AdminPage() {
               disabled={uploading}
             />
             <label htmlFor="hasListening" className="text-sm font-medium">
-              Có file nghe (Listening)
+              Has listening audio file
             </label>
           </div>
 
@@ -376,13 +370,13 @@ export default function AdminPage() {
             disabled={uploading || !pdfFile || !title}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {uploading ? 'Đang upload...' : 'Upload PDF'}
+            {uploading ? 'Uploading...' : 'Upload PDF'}
           </button>
         </form>
 
         <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
           <p className="text-sm text-yellow-800">
-            ⚠️ <strong>Lưu ý:</strong> Quá trình upload và chuyển đổi PDF có thể mất 10-20 phút cho file lớn (500+ trang).
+            ⚠️ <strong>Note:</strong> Upload and PDF conversion may take 10-20 minutes for large files (500+ pages).
           </p>
         </div>
       </div>
@@ -399,18 +393,18 @@ export default function AdminPage() {
               type="number"
               value={bookIdForAudio}
               onChange={(e) => setBookIdForAudio(e.target.value)}
-              placeholder="VD: 1"
+              placeholder="e.g. 1"
               className="w-full p-2 border border-gray-300 rounded"
               disabled={uploadingAudio}
             />
             <p className="text-sm text-gray-600 mt-1">
-              Nhập Book ID từ kết quả upload PDF ở trên
+              Enter Book ID from PDF upload result above
             </p>
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-2">
-              File Audio * (MP3, WAV, OGG)
+              Audio File * (MP3, WAV, OGG)
             </label>
             <input
               id="audio-input"
@@ -422,7 +416,7 @@ export default function AdminPage() {
             />
             {audioFile && (
               <p className="text-sm text-gray-600 mt-1">
-                Đã chọn: {audioFile.name} ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
+                Selected: {audioFile.name} ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
           </div>
@@ -432,29 +426,29 @@ export default function AdminPage() {
             disabled={uploadingAudio || !audioFile || !bookIdForAudio}
             className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {uploadingAudio ? 'Đang upload...' : 'Upload Audio'}
+            {uploadingAudio ? 'Uploading...' : 'Upload Audio'}
           </button>
         </form>
       </div>
 
       {/* Instructions */}
       <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-3">📖 Hướng Dẫn Sử Dụng</h3>
+        <h3 className="text-lg font-semibold mb-3">📖 User Guide</h3>
         <ol className="list-decimal list-inside space-y-2 text-sm">
-          <li>Chọn file PDF cần upload (tối đa vài trăm MB)</li>
-          <li>Nhập tên sách và chọn danh mục</li>
-          <li>Nếu sách có file nghe, tick vào "Có file nghe"</li>
-          <li>Click "Upload PDF" và đợi quá trình hoàn tất</li>
-          <li>Sau khi upload PDF thành công, copy Book ID</li>
-          <li>Nếu có audio, chọn file audio và nhập Book ID</li>
-          <li>Click "Upload Audio" để upload file nghe</li>
-          <li>Quay về trang chủ để xem sách đã upload</li>
+          <li>Select PDF file to upload (max few hundred MB)</li>
+          <li>Enter book title and select category</li>
+          <li>If book has audio file, check "Has listening audio file"</li>
+          <li>Click "Upload PDF" and wait for completion</li>
+          <li>After PDF upload succeeds, copy Book ID</li>
+          <li>If there's audio, select audio file and enter Book ID</li>
+          <li>Click "Upload Audio" to upload audio file</li>
+          <li>Return to home page to view uploaded book</li>
         </ol>
       </div>
 
       {/* API Info */}
       <div className="mt-4 bg-gray-50 border border-gray-200 rounded-lg p-6">
-        <h3 className="text-lg font-semibold mb-3">🔧 Thông Tin Kỹ Thuật</h3>
+        <h3 className="text-lg font-semibold mb-3">🔧 Technical Information</h3>
         <div className="space-y-2 text-sm font-mono">
           <p><strong>API URL:</strong> {API_URL}</p>
           <p><strong>Admin Key:</strong> {ADMIN_API_KEY.substring(0, 20)}...</p>

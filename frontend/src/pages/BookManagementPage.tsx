@@ -52,7 +52,7 @@ export default function BookManagementPage() {
       setBooks(response.data.books);
     } catch (err) {
       console.error('Error fetching books:', err);
-      setError('Không thể tải danh sách sách');
+      setError('Unable to load book list');
     } finally {
       setLoading(false);
     }
@@ -69,7 +69,7 @@ export default function BookManagementPage() {
       setEditHasListening(response.data.book.hasListening);
     } catch (err) {
       console.error('Error fetching book details:', err);
-      setError('Không thể tải chi tiết sách');
+      setError('Unable to load book details');
     } finally {
       setLoading(false);
     }
@@ -85,33 +85,33 @@ export default function BookManagementPage() {
         category: editCategory,
         hasListening: editHasListening,
       });
-      setMessage('✅ Cập nhật thông tin sách thành công!');
+      setMessage('✅ Book information updated successfully!');
       setEditMode(false);
       fetchBookDetails(selectedBook.id);
       fetchBooks();
     } catch (error) {
       console.error('Update error:', error);
-      setError('❌ Không thể cập nhật sách');
+      setError('❌ Unable to update book');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteBook = async (bookId: number) => {
-    if (!confirm('Bạn có chắc muốn xóa sách này? Hành động này không thể hoàn tác!')) {
+    if (!confirm('Are you sure you want to delete this book? This action cannot be undone!')) {
       return;
     }
 
     try {
       setLoading(true);
       await axios.delete(`${API_URL}/api/admin/books/${bookId}`);
-      setMessage('✅ Xóa sách thành công!');
+      setMessage('✅ Book deleted successfully!');
       setSelectedBook(null);
       setPages([]);
       fetchBooks();
     } catch (error) {
       console.error('Delete error:', error);
-      setError('❌ Không thể xóa sách');
+      setError('❌ Unable to delete book');
     } finally {
       setLoading(false);
     }
@@ -121,12 +121,12 @@ export default function BookManagementPage() {
     if (!selectedBook) return;
 
     if (thumbnailUploadMode === 'file' && !thumbnailFile) {
-      setError('Vui lòng chọn file ảnh');
+      setError('Please select an image file');
       return;
     }
 
     if (thumbnailUploadMode === 'url' && !thumbnailUrl) {
-      setError('Vui lòng nhập URL ảnh');
+      setError('Please enter image URL');
       return;
     }
 
@@ -151,14 +151,14 @@ export default function BookManagementPage() {
         );
       }
 
-      setMessage('✅ Upload thumbnail thành công!');
+      setMessage('✅ Thumbnail uploaded successfully!');
       setThumbnailFile(null);
       setThumbnailUrl('');
       fetchBookDetails(selectedBook.id);
       fetchBooks();
     } catch (error) {
       console.error('Upload thumbnail error:', error);
-      setError('❌ Không thể upload thumbnail');
+      setError('❌ Unable to upload thumbnail');
     } finally {
       setLoading(false);
     }
@@ -172,12 +172,12 @@ export default function BookManagementPage() {
       await axios.put(
         `${API_URL}/api/admin/books/${selectedBook.id}/thumbnail/page/${pageNumber}`
       );
-      setMessage(`✅ Đã đặt trang ${pageNumber} làm thumbnail!`);
+      setMessage(`✅ Set page ${pageNumber} as thumbnail!`);
       fetchBookDetails(selectedBook.id);
       fetchBooks();
     } catch (error) {
       console.error('Set thumbnail error:', error);
-      setError('❌ Không thể đặt trang làm thumbnail');
+      setError('❌ Unable to set page as thumbnail');
     } finally {
       setLoading(false);
     }
@@ -187,12 +187,12 @@ export default function BookManagementPage() {
     if (!replacePageId) return;
 
     if (replaceUploadMode === 'file' && !replaceImageFile) {
-      setError('Vui lòng chọn file ảnh');
+      setError('Please select an image file');
       return;
     }
 
     if (replaceUploadMode === 'url' && !replaceImageUrl) {
-      setError('Vui lòng nhập URL ảnh');
+      setError('Please enter image URL');
       return;
     }
 
@@ -217,7 +217,7 @@ export default function BookManagementPage() {
         );
       }
 
-      setMessage('✅ Thay thế ảnh trang thành công!');
+      setMessage('✅ Page image replaced successfully!');
       setReplacePageId(null);
       setReplaceImageFile(null);
       setReplaceImageUrl('');
@@ -226,7 +226,7 @@ export default function BookManagementPage() {
       }
     } catch (error) {
       console.error('Replace page error:', error);
-      setError('❌ Không thể thay thế ảnh trang');
+      setError('❌ Unable to replace page image');
     } finally {
       setLoading(false);
     }
@@ -234,7 +234,7 @@ export default function BookManagementPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">📚 Quản Lý Sách</h1>
+      <h1 className="text-3xl font-bold mb-8">📚 Book Management</h1>
 
       {message && (
         <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
@@ -253,9 +253,9 @@ export default function BookManagementPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Books List */}
         <div className="lg:col-span-1 bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-4">Danh Sách Sách</h2>
+          <h2 className="text-xl font-semibold mb-4">Book List</h2>
           
-          {loading && <p className="text-gray-500">Đang tải...</p>}
+          {loading && <p className="text-gray-500">Loading...</p>}
           
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {books.map((book) => (
@@ -277,10 +277,10 @@ export default function BookManagementPage() {
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm truncate">{book.title}</h3>
                     <p className="text-xs text-gray-500">
-                      ID: {book.id} | {book.totalPages} trang
+                      ID: {book.id} | {book.totalPages} pages
                     </p>
                     <p className="text-xs text-gray-500">
-                      {book.category === 'book' ? '📚 Sách' : '📝 Đề thi'}
+                      {book.category === 'book' ? '📚 Book' : '📝 Test'}
                       {book.hasListening && ' | 🎵'}
                     </p>
                   </div>
@@ -294,7 +294,7 @@ export default function BookManagementPage() {
         <div className="lg:col-span-2">
           {!selectedBook ? (
             <div className="bg-white shadow-md rounded-lg p-6 text-center text-gray-500">
-              Chọn một cuốn sách để xem chi tiết
+              Select a book to view details
             </div>
           ) : (
             <div className="space-y-6">
@@ -306,14 +306,14 @@ export default function BookManagementPage() {
                     onClick={() => handleDeleteBook(selectedBook.id)}
                     className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
                   >
-                    🗑️ Xóa Sách
+                    🗑️ Delete Book
                   </button>
                 </div>
 
                 {editMode ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Tên Sách</label>
+                      <label className="block text-sm font-medium mb-2">Book Title</label>
                       <input
                         type="text"
                         value={editTitle}
@@ -322,14 +322,14 @@ export default function BookManagementPage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">Danh Mục</label>
+                      <label className="block text-sm font-medium mb-2">Category</label>
                       <select
                         value={editCategory}
                         onChange={(e) => setEditCategory(e.target.value)}
                         className="w-full p-2 border rounded"
                       >
-                        <option value="book">Sách</option>
-                        <option value="test">Đề Thi</option>
+                        <option value="book">Book</option>
+                        <option value="test">Test</option>
                       </select>
                     </div>
                     <div className="flex items-center">
@@ -339,20 +339,20 @@ export default function BookManagementPage() {
                         onChange={(e) => setEditHasListening(e.target.checked)}
                         className="mr-2"
                       />
-                      <label className="text-sm">Có file nghe</label>
+                      <label className="text-sm">Has audio file</label>
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={handleUpdateBook}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                       >
-                        💾 Lưu
+                        💾 Save
                       </button>
                       <button
                         onClick={() => setEditMode(false)}
                         className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
                       >
-                        Hủy
+                        Cancel
                       </button>
                     </div>
                   </div>
@@ -362,22 +362,22 @@ export default function BookManagementPage() {
                       <strong>ID:</strong> {selectedBook.id}
                     </p>
                     <p className="text-gray-600 mb-2">
-                      <strong>Danh mục:</strong> {selectedBook.category === 'book' ? 'Sách' : 'Đề thi'}
+                      <strong>Category:</strong> {selectedBook.category === 'book' ? 'Book' : 'Test'}
                     </p>
                     <p className="text-gray-600 mb-2">
-                      <strong>Tổng số trang:</strong> {selectedBook.totalPages}
+                      <strong>Total pages:</strong> {selectedBook.totalPages}
                     </p>
                     <p className="text-gray-600 mb-2">
-                      <strong>Có file nghe:</strong> {selectedBook.hasListening ? 'Có' : 'Không'}
+                      <strong>Has audio:</strong> {selectedBook.hasListening ? 'Yes' : 'No'}
                     </p>
                     <p className="text-gray-600 mb-4">
-                      <strong>Trạng thái:</strong> {selectedBook.processingStatus}
+                      <strong>Status:</strong> {selectedBook.processingStatus}
                     </p>
                     <button
                       onClick={() => setEditMode(true)}
                       className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                     >
-                      ✏️ Chỉnh Sửa
+                      ✏️ Edit
                     </button>
                   </div>
                 )}
@@ -385,11 +385,11 @@ export default function BookManagementPage() {
 
               {/* Thumbnail Management */}
               <div className="bg-white shadow-md rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4">🖼️ Quản Lý Thumbnail</h3>
+                <h3 className="text-xl font-semibold mb-4">🖼️ Thumbnail Management</h3>
                 
                 {selectedBook.thumbnailUrl && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Thumbnail hiện tại:</p>
+                    <p className="text-sm text-gray-600 mb-2">Current thumbnail:</p>
                     <img
                       src={selectedBook.thumbnailUrl}
                       alt="Thumbnail"
@@ -401,7 +401,7 @@ export default function BookManagementPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Chọn phương thức upload
+                      Select upload method
                     </label>
                     <div className="flex gap-4 mb-3">
                       <label className="flex items-center">
@@ -422,7 +422,7 @@ export default function BookManagementPage() {
                           onChange={(e) => setThumbnailUploadMode(e.target.value as 'file' | 'url')}
                           className="mr-2"
                         />
-                        Từ URL
+                        From URL
                       </label>
                     </div>
 
@@ -457,7 +457,7 @@ export default function BookManagementPage() {
                             onClick={handleUploadThumbnail}
                             className="mt-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
                           >
-                            📤 Upload từ URL
+                            📤 Upload from URL
                           </button>
                         )}
                       </>
@@ -468,7 +468,7 @@ export default function BookManagementPage() {
 
               {/* Pages Grid */}
               <div className="bg-white shadow-md rounded-lg p-6">
-                <h3 className="text-xl font-semibold mb-4">📄 Các Trang ({pages.length})</h3>
+                <h3 className="text-xl font-semibold mb-4">📄 Pages ({pages.length})</h3>
                 
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[600px] overflow-y-auto">
                   {pages.map((page) => (
@@ -479,20 +479,20 @@ export default function BookManagementPage() {
                         className="w-full h-auto mb-2 rounded"
                       />
                       <p className="text-sm font-medium text-center mb-2">
-                        Trang {page.pageNumber}
+                        Page {page.pageNumber}
                       </p>
                       <div className="space-y-1">
                         <button
                           onClick={() => handleSetPageAsThumbnail(page.pageNumber)}
                           className="w-full text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                         >
-                          Đặt làm Thumbnail
+                          Set as Thumbnail
                         </button>
                         <button
                           onClick={() => setReplacePageId(page.id)}
                           className="w-full text-xs bg-orange-500 text-white px-2 py-1 rounded hover:bg-orange-600"
                         >
-                          Thay Thế Ảnh
+                          Replace Image
                         </button>
                       </div>
                     </div>
@@ -504,11 +504,11 @@ export default function BookManagementPage() {
               {replacePageId && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                   <div className="bg-white rounded-lg p-6 max-w-md w-full">
-                    <h3 className="text-xl font-semibold mb-4">Thay Thế Ảnh Trang</h3>
+                    <h3 className="text-xl font-semibold mb-4">Replace Page Image</h3>
                     
                     <div className="mb-4">
                       <label className="block text-sm font-medium mb-2">
-                        Chọn phương thức upload
+                        Select upload method
                       </label>
                       <div className="flex gap-4 mb-3">
                         <label className="flex items-center">
@@ -529,7 +529,7 @@ export default function BookManagementPage() {
                             onChange={(e) => setReplaceUploadMode(e.target.value as 'file' | 'url')}
                             className="mr-2"
                           />
-                          Từ URL
+                          From URL
                         </label>
                       </div>
 
@@ -560,7 +560,7 @@ export default function BookManagementPage() {
                         }
                         className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
                       >
-                        Thay Thế
+                        Replace
                       </button>
                       <button
                         onClick={() => {
@@ -570,7 +570,7 @@ export default function BookManagementPage() {
                         }}
                         className="flex-1 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
                       >
-                        Hủy
+                        Cancel
                       </button>
                     </div>
                   </div>

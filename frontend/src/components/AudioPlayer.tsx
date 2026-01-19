@@ -94,7 +94,7 @@ function AudioPlayer({ bookId }: AudioPlayerProps) {
     return (
       <Alert variant="destructive">
         <AlertDescription>
-          Audio không khả dụng cho sách này.
+          Audio is not available for this book.
         </AlertDescription>
       </Alert>
     );
@@ -104,22 +104,22 @@ function AudioPlayer({ bookId }: AudioPlayerProps) {
     <div className="space-y-2">
       <audio ref={audioRef} src={audioUrl} preload="metadata" />
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {/* Play/Pause Button */}
         <Button
           onClick={togglePlay}
           size="icon"
-          className="h-12 w-12 rounded-full"
+          className="h-10 w-10 md:h-12 md:w-12 rounded-full flex-shrink-0"
         >
           {isPlaying ? (
-            <Pause className="h-5 w-5" />
+            <Pause className="h-4 w-4 md:h-5 md:w-5" />
           ) : (
-            <Play className="h-5 w-5" />
+            <Play className="h-4 w-4 md:h-5 md:w-5" />
           )}
         </Button>
 
         {/* Progress Bar */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <input
             type="range"
             min="0"
@@ -137,8 +137,8 @@ function AudioPlayer({ bookId }: AudioPlayerProps) {
           </div>
         </div>
 
-        {/* Volume Control */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Volume Control - Hidden on mobile */}
+        <div className="hidden md:flex items-center gap-2 flex-shrink-0">
           <Volume2 className="h-5 w-5 text-muted-foreground" />
           <input
             type="range"

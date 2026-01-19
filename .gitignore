@@ -5,6 +5,10 @@ node_modules/
 
 pdf/
 
+.kiro/
+
+.shared/
+
 # Environment variables
 .env
 .env.local
