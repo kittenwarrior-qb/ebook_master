@@ -24,13 +24,13 @@ export class PagesService {
     return page;
   }
 
-  async getPageImage(bookId: number, pageNumber: number): Promise<{
-    data: Buffer;
-    format: string;
-  }> {
+  async getPageImage(
+    bookId: number,
+    pageNumber: number,
+  ): Promise<{ url: string; format: string }> {
     const page = await this.findPage(bookId, pageNumber);
     return {
-      data: page.imageData,
+      url: page.imageUrl,
       format: page.imageFormat,
     };
   }

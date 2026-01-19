@@ -21,8 +21,12 @@ export class Page {
   @Column({ name: 'page_number', type: 'integer' })
   pageNumber: number;
 
-  @Column({ name: 'image_data', type: 'bytea' })
-  imageData: Buffer;
+  // Store Cloudinary URL instead of binary data
+  @Column({ name: 'image_url', type: 'varchar', length: 500 })
+  imageUrl: string;
+
+  @Column({ name: 'cloudinary_public_id', type: 'varchar', length: 255 })
+  cloudinaryPublicId: string;
 
   @Column({ name: 'image_format', type: 'varchar', length: 10, default: 'jpeg' })
   imageFormat: string;

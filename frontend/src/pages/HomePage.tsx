@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { booksApi, Book } from '../services/api';
+import { booksApi, type Book } from '../services/api';
 import BookCard from '../components/BookCard';
 
 function HomePage() {

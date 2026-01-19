@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { booksApi, pagesApi, progressApi, Book } from '../services/api';
+import { booksApi, pagesApi, progressApi, type Book } from '../services/api';
 import AudioPlayer from '../components/AudioPlayer';
 
 function BookViewer() {
@@ -118,7 +118,7 @@ function BookViewer() {
     } else if (e.key === 'ArrowRight') {
       handleNext();
     }
-  }, [currentPage, book]);
+  }, [handlePrevious, handleNext]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -219,7 +219,7 @@ function BookViewer() {
             </div>
           )}
           <img
-            src={pagesApi.getPageImage(parseInt(bookId), currentPage)}
+            src={pagesApi.getPageImage(parseInt(bookId!), currentPage)}
             alt={`Page ${currentPage}`}
             className="w-full h-auto"
             onLoad={() => setImageLoading(false)}

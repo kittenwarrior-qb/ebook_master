@@ -6,14 +6,21 @@ import {
   Res,
   HttpStatus,
 } from '@nestjs/common';
-import { Response } from 'express';
+import type { Response } from 'express';
+import { ApiTags, ApiOperation, ApiParam, ApiResponse, ApiProduces } from '@nestjs/swagger';
 import { AudioService } from './audio.service';
 
+@ApiTags('audio')
 @Controller('api/books/:bookId/audio')
 export class AudioController {
   constructor(private readonly audioService: AudioService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get audio file for a book', description: 'Stream the audio file associated with a book' })
+  @ApiParam({ name: 'bookId', type: 'integer', description: 'Book ID' })
+  @ApiProduces('audio/mpeg', 'audio/wav', 'audio/ogg')
+  @ApiResponse({ status: 200, description: 'Audio file stream' })
+  @ApiResponse({ status: 404, description: 'Audio file not found' })
   async getAudio(
     @Param('bookId', ParseIntPipe) bookId: number,
     @Res() res: Response,

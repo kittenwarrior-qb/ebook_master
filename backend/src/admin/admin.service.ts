@@ -3,10 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Book, Page, AudioFile } from '../entities';
 import { CreateBookDto } from './dto/create-book.dto';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import { fromPath } from 'pdf2pic';
-import * as pdfParse from 'pdf-parse';
 
 @Injectable()
 export class AdminService {
@@ -17,6 +17,7 @@ export class AdminService {
     private pagesRepository: Repository<Page>,
     @InjectRepository(AudioFile)
     private audioRepository: Repository<AudioFile>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
   async uploadBook(
@@ -116,9 +117,11 @@ export class AdminService {
   }
 
   private async getPageCount(pdfPath: string): Promise<number> {
+    const { PDFParse } = await import('pdf-parse');
     const dataBuffer = fs.readFileSync(pdfPath);
-    const data = await pdfParse(dataBuffer);
-    return data.numpages;
+    const pdfParse = new PDFParse({ data: dataBuffer });
+    const info = await pdfParse.getInfo();
+    return info.total;
   }
 
   private async processPdfPages(
@@ -140,7 +143,7 @@ export class AdminService {
     // Process pages in batches to avoid memory issues
     const batchSize = 10;
     for (let i = 1; i <= pageCount; i += batchSize) {
-      const batch = [];
+      const batch: Promise<void>[] = [];
       const endPage = Math.min(i + batchSize - 1, pageCount);
 
       for (let pageNum = i; pageNum <= endPage; pageNum++) {
@@ -158,11 +161,23 @@ export class AdminService {
   ): Promise<void> {
     try {
       const result = await convert(pageNumber, { responseType: 'buffer' });
-      
+
+      // Upload to Cloudinary
+      const folder = `toeic-master/books/${bookId}`;
+      const publicId = `page-${pageNumber}`;
+      const { url, publicId: cloudinaryPublicId } =
+        await this.cloudinaryService.uploadImage(
+          result.buffer,
+          folder,
+          publicId,
+        );
+
+      // Save URL to database
       const page = this.pagesRepository.create({
         bookId,
         pageNumber,
-        imageData: result.buffer,
+        imageUrl: url,
+        cloudinaryPublicId,
         imageFormat: 'jpeg',
       });
 
