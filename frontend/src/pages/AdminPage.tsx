@@ -2,12 +2,22 @@ import { useState } from 'react';
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-const ADMIN_API_KEY = 'toeic_master_admin_2024_secure_key_xyz789';
+const ADMIN_API_KEY = '1';
 
 interface UploadResponse {
   success: boolean;
   book_id: number;
   pages_imported: number;
+  status: string;
+}
+
+interface BookStatusResponse {
+  book_id: number;
+  status: string;
+  processed_pages: number;
+  total_pages: number;
+  message: string;
+  progress_percentage: number;
 }
 
 interface AudioUploadResponse {
@@ -16,6 +26,9 @@ interface AudioUploadResponse {
 }
 
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
@@ -26,6 +39,97 @@ export default function AdminPage() {
   const [uploadingAudio, setUploadingAudio] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [processingStep, setProcessingStep] = useState('');
+  const [_currentBookId, setCurrentBookId] = useState<number | null>(null);
+  const [_isPolling, setIsPolling] = useState(false);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_API_KEY) {
+      setIsAuthenticated(true);
+      setAuthError('');
+    } else {
+      setAuthError('❌ Mật khẩu không đúng!');
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+          <h1 className="text-3xl font-bold mb-6 text-center">🔐 Admin Access</h1>
+          <form onSubmit={handlePasswordSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Nhập mật khẩu Admin
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Nhập mật khẩu..."
+                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                autoFocus
+              />
+            </div>
+            {authError && (
+              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+                {authError}
+              </div>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 font-medium"
+            >
+              Xác thực
+            </button>
+          </form>
+          <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+            💡 Liên hệ quản trị viên để lấy mật khẩu
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const pollBookStatus = async (bookId: number) => {
+    setIsPolling(true);
+    const pollInterval = setInterval(async () => {
+      try {
+        const response = await axios.get<BookStatusResponse>(
+          `${API_URL}/api/admin/book-status/${bookId}`
+        );
+
+        const { status, total_pages, message, progress_percentage } = response.data;
+
+        setUploadProgress(progress_percentage);
+        setProcessingStep(message);
+
+        if (status === 'completed') {
+          clearInterval(pollInterval);
+          setIsPolling(false);
+          setMessage(
+            `✅ Upload thành công! Book ID: ${bookId}, Số trang: ${total_pages}`
+          );
+          setUploading(false);
+          setTimeout(() => {
+            setProcessingStep('');
+            setUploadProgress(0);
+          }, 3000);
+        } else if (status === 'failed') {
+          clearInterval(pollInterval);
+          setIsPolling(false);
+          setError(`❌ Lỗi xử lý: ${message}`);
+          setUploading(false);
+          setProcessingStep('');
+          setUploadProgress(0);
+        }
+      } catch (err) {
+        console.error('Polling error:', err);
+      }
+    }, 2000); // Poll every 2 seconds
+  };
 
   const handlePdfUpload = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +142,8 @@ export default function AdminPage() {
     setUploading(true);
     setMessage('');
     setError('');
+    setUploadProgress(0);
+    setProcessingStep('Đang chuẩn bị upload...');
 
     try {
       const formData = new FormData();
@@ -46,12 +152,13 @@ export default function AdminPage() {
       formData.append('category', category);
       formData.append('hasListening', hasListening.toString());
 
+      setProcessingStep('📤 Đang upload file PDF lên server...');
+
       const response = await axios.post<UploadResponse>(
         `${API_URL}/api/admin/upload-book`,
         formData,
         {
           headers: {
-            'x-api-key': ADMIN_API_KEY,
             'Content-Type': 'multipart/form-data',
           },
           onUploadProgress: (progressEvent) => {
@@ -59,16 +166,24 @@ export default function AdminPage() {
               const percentCompleted = Math.round(
                 (progressEvent.loaded * 100) / progressEvent.total
               );
-              setMessage(`Đang upload: ${percentCompleted}%`);
+              setUploadProgress(percentCompleted);
+              if (percentCompleted < 100) {
+                setProcessingStep(`📤 Đang upload: ${percentCompleted}%`);
+              } else {
+                setProcessingStep('⚙️ Đang xử lý PDF và chuyển đổi thành ảnh...');
+              }
             }
           },
         }
       );
 
-      setMessage(
-        `✅ Upload thành công! Book ID: ${response.data.book_id}, Số trang: ${response.data.pages_imported}`
-      );
-      
+      setProcessingStep('⚙️ Đang xử lý PDF và chuyển đổi thành ảnh...');
+      setUploadProgress(100);
+
+      // Start polling for status
+      setCurrentBookId(response.data.book_id);
+      pollBookStatus(response.data.book_id);
+
       // Reset form
       setPdfFile(null);
       setTitle('');
@@ -81,11 +196,12 @@ export default function AdminPage() {
       
     } catch (err: unknown) {
       const error = err as { response?: { data?: { message?: string } }; message?: string };
+      setProcessingStep('');
       setError(
         `❌ Lỗi: ${error.response?.data?.message || error.message || 'Unknown error'}`
       );
-    } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -111,7 +227,6 @@ export default function AdminPage() {
         formData,
         {
           headers: {
-            'x-api-key': ADMIN_API_KEY,
             'Content-Type': 'multipart/form-data',
           },
         }
@@ -141,7 +256,15 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">Admin Panel - Upload Sách</h1>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Admin Panel - Upload Sách</h1>
+        <a
+          href="/admin/books"
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+        >
+          📚 Quản Lý Sách
+        </a>
+      </div>
 
       {/* Messages */}
       {message && (
@@ -152,6 +275,33 @@ export default function AdminPage() {
       {error && (
         <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
           {error}
+        </div>
+      )}
+
+      {/* Progress Bar */}
+      {uploading && (
+        <div className="mb-4 p-4 bg-blue-50 border border-blue-300 rounded-lg">
+          <div className="mb-2 flex justify-between items-center">
+            <span className="text-sm font-medium text-blue-700">{processingStep}</span>
+            <span className="text-sm font-bold text-blue-700">{uploadProgress}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+            <div
+              className="bg-blue-600 h-4 rounded-full transition-all duration-300 flex items-center justify-center"
+              style={{ width: `${uploadProgress}%` }}
+            >
+              {uploadProgress > 10 && (
+                <span className="text-xs text-white font-semibold">{uploadProgress}%</span>
+              )}
+            </div>
+          </div>
+          <div className="mt-2 text-xs text-gray-600">
+            {uploadProgress < 100 ? (
+              <p>⏳ Vui lòng đợi, đang xử lý file...</p>
+            ) : (
+              <p>⚙️ Đang xử lý PDF, có thể mất vài phút...</p>
+            )}
+          </div>
         </div>
       )}
 

@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
 import { booksApi, type Book } from '../services/api';
 import BookCard from '../components/BookCard';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
+import { ErrorMessage } from '@/components/shared/ErrorMessage';
+import { Button } from '@/components/ui/button';
 
 function HomePage() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -34,59 +39,80 @@ function HomePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="space-y-6">
+        <LoadingSpinner count={4} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600 mb-4">{error}</p>
-        <button
-          onClick={fetchBooks}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+      <div className="text-center py-12 space-y-4">
+        <ErrorMessage message={error} />
+        <Button onClick={fetchBooks}>
           Retry
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12">
-      {/* Books Section */}
-      <section>
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">
-          Sách học TOEIC
-        </h2>
-        {books.length === 0 ? (
-          <p className="text-gray-500">Chưa có sách nào được thêm vào.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {books.map((book) => (
-              <BookCard key={book.id} book={book} />
-            ))}
-          </div>
-        )}
-      </section>
+    <div className="space-y-8">
+      {/* Hero Section */}
+      <Card className="border-none shadow-none bg-gradient-to-r from-primary/10 to-primary/5">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-4xl font-display">
+            Welcome to TOEIC Learning Platform
+          </CardTitle>
+          <CardDescription className="text-lg">
+            Master English with our comprehensive collection of books and practice tests
+          </CardDescription>
+        </CardHeader>
+      </Card>
 
-      {/* Tests Section */}
-      <section>
-        <h2 className="text-3xl font-bold text-gray-900 mb-6">
-          Bài test TOEIC
-        </h2>
-        {tests.length === 0 ? (
-          <p className="text-gray-500">Chưa có bài test nào được thêm vào.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {tests.map((test) => (
-              <BookCard key={test.id} book={test} />
-            ))}
-          </div>
-        )}
-      </section>
+      {/* Tabbed Content */}
+      <Tabs defaultValue="books" className="w-full">
+        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+          <TabsTrigger value="books">
+            Sách học ({books.length})
+          </TabsTrigger>
+          <TabsTrigger value="tests">
+            Bài test ({tests.length})
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="books" className="mt-6">
+          {books.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6 text-center text-muted-foreground">
+                Chưa có sách nào được thêm vào.
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {books.map((book) => (
+                <BookCard key={book.id} book={book} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="tests" className="mt-6">
+          {tests.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6 text-center text-muted-foreground">
+                Chưa có bài test nào được thêm vào.
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {tests.map((test) => (
+                <BookCard key={test.id} book={test} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

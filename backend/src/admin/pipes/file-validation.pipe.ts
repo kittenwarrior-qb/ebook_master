@@ -50,3 +50,25 @@ export class AudioFileValidationPipe implements PipeTransform {
     return value;
   }
 }
+
+@Injectable()
+export class ImageFileValidationPipe implements PipeTransform {
+  transform(value: Express.Multer.File) {
+    const maxSize = 10 * 1024 * 1024; // 10MB for images
+    const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+
+    if (!value) {
+      throw new BadRequestException('Image file is required');
+    }
+
+    if (!allowedMimeTypes.includes(value.mimetype)) {
+      throw new BadRequestException('Only JPEG or PNG images are allowed');
+    }
+
+    if (value.size > maxSize) {
+      throw new BadRequestException('File size exceeds 10MB limit');
+    }
+
+    return value;
+  }
+}

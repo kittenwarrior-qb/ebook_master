@@ -45,5 +45,14 @@ temp/
 tmp/
 *.tmp
 
+# Backups
+backend/backups/*.sql
+backend/backups/*.dump
+backups/
+
 # PDF files (if you don't want to commit them)
 # pdf/
+
+# Backups
+backend/backups/*.sql
+backend/backups/*.dump

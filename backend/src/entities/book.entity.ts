@@ -30,6 +30,20 @@ export class Book {
   @Column({ name: 'thumbnail_url', type: 'text', nullable: true })
   thumbnailUrl: string;
 
+  @Column({
+    name: 'processing_status',
+    type: 'varchar',
+    length: 50,
+    default: 'pending',
+  })
+  processingStatus: string; // 'pending', 'processing', 'completed', 'failed'
+
+  @Column({ name: 'processed_pages', type: 'integer', default: 0 })
+  processedPages: number;
+
+  @Column({ name: 'processing_message', type: 'text', nullable: true })
+  processingMessage: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

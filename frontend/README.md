@@ -1,73 +1,152 @@
-# React + TypeScript + Vite
+# TOEIC Learning Platform - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive learning platform for TOEIC preparation built with React, TypeScript, and shadcn/ui.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📚 **Book Library**: Browse and read TOEIC learning materials
+- 📝 **Practice Tests**: Access TOEIC practice tests
+- 🎧 **Audio Support**: Listen to audio materials for books with listening sections
+- 🎨 **Modern UI**: Clean, professional interface built with shadcn/ui
+- 📱 **Responsive Design**: Works seamlessly on desktop, tablet, and mobile
+- ⚡ **Fast Performance**: Optimized with lazy loading and code splitting
+- ♿ **Accessible**: WCAG AA compliant with keyboard navigation support
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19.2.0** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool with rolldown
+- **shadcn/ui** - Component library (Radix UI + Tailwind CSS)
+- **Tailwind CSS 4.x** - Styling
+- **React Router 7.x** - Routing
+- **Lucide React** - Icons
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js 18+ 
+- npm or yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── ui/              # shadcn/ui components
+│   │   ├── layout/          # Layout components (Header, Footer, Navigation)
+│   │   ├── features/        # Feature-specific components
+│   │   └── shared/          # Shared utility components
+│   ├── pages/               # Page components
+│   ├── services/            # API services
+│   ├── lib/                 # Utilities
+│   └── styles/              # Global styles
+├── components.json          # shadcn/ui configuration
+└── tailwind.config.js       # Tailwind configuration
+```
+
+## Theme Customization
+
+The application uses a custom theme built on shadcn/ui. Theme colors and styles are defined in:
+
+- `tailwind.config.js` - Tailwind theme configuration
+- `src/index.css` - CSS custom properties for light/dark themes
+
+### Color Palette
+
+- **Primary**: Professional blue (#3B82F6)
+- **Secondary**: Neutral gray
+- **Success**: Green (#22C55E)
+- **Warning**: Amber (#F59E0B)
+- **Info**: Blue (#0EA5E9)
+
+### Typography
+
+- **Body**: Inter - Clean, readable sans-serif
+- **Display**: Lexend - Modern, friendly headings
+
+## Component Usage
+
+### Adding shadcn/ui Components
+
+```bash
+npx shadcn@latest add [component-name]
+```
+
+### Example: Using Card Component
+
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+
+function MyComponent() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Title</CardTitle>
+      </CardHeader>
+      <CardContent>
+        Content goes here
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
+
+## Performance Optimizations
+
+- **Code Splitting**: Routes are lazy-loaded using React.lazy()
+- **Image Optimization**: Lazy loading for images with proper sizing
+- **Bundle Optimization**: Tree-shaking and minification
+- **Caching**: Efficient caching strategies for static assets
+
+## Accessibility
+
+- ARIA labels on all interactive elements
+- Keyboard navigation support
+- Screen reader compatible
+- WCAG AA color contrast ratios
+- Focus indicators for keyboard users
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Contributing
+
+1. Follow the existing code style
+2. Use TypeScript for type safety
+3. Ensure components are accessible
+4. Test on multiple screen sizes
+5. Add JSDoc comments for complex functions
+
+## License
+
+All rights reserved.

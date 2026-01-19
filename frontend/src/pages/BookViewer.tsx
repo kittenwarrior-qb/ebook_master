@@ -2,6 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { booksApi, pagesApi, progressApi, type Book } from '../services/api';
 import AudioPlayer from '../components/AudioPlayer';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
+import { ErrorMessage } from '@/components/shared/ErrorMessage';
+import { ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react';
 
 function BookViewer() {
   const { bookId } = useParams<{ bookId: string }>();
@@ -127,114 +132,114 @@ function BookViewer() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[600px]">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+      <div className="flex justify-center items-center min-h-150">
+        <LoadingSpinner count={1} />
       </div>
     );
   }
 
   if (error || !book) {
     return (
-      <div className="text-center py-12">
-        <p className="text-red-600 mb-4">{error || 'Book not found'}</p>
-        <button
-          onClick={() => navigate('/')}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
+      <div className="text-center py-12 space-y-4">
+        <ErrorMessage message={error || 'Book not found'} />
+        <Button onClick={() => navigate('/')}>
           Back to Home
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="mb-6">
-        <button
+      <div>
+        <Button
+          variant="ghost"
           onClick={() => navigate('/')}
-          className="text-blue-600 hover:text-blue-800 mb-4 flex items-center gap-2"
+          className="mb-4"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Back to Home
-        </button>
-        <h1 className="text-3xl font-bold text-gray-900">{book.title}</h1>
+        </Button>
+        <h1 className="text-3xl font-display font-bold">{book.title}</h1>
       </div>
 
       {/* Audio Player */}
       {book.hasListening && bookId && (
-        <div className="mb-6">
-          <AudioPlayer bookId={parseInt(bookId)} />
-        </div>
+        <Card>
+          <CardContent className="pt-6">
+            <AudioPlayer bookId={parseInt(bookId)} />
+          </CardContent>
+        </Card>
       )}
 
       {/* Navigation Controls */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-        <div className="flex items-center justify-between gap-4">
-          <button
-            onClick={handlePrevious}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Previous
-          </button>
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <Button
+              onClick={handlePrevious}
+              disabled={currentPage === 1}
+              variant="outline"
+              size="lg"
+            >
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Previous
+            </Button>
 
-          <form onSubmit={handlePageInputSubmit} className="flex items-center gap-2">
-            <span className="text-gray-600">Page</span>
-            <input
-              type="number"
-              value={pageInput}
-              onChange={handlePageInputChange}
-              className="w-20 px-3 py-2 border border-gray-300 rounded text-center"
-              min={1}
-              max={book.totalPages}
-            />
-            <span className="text-gray-600">of {book.totalPages}</span>
-          </form>
+            <form onSubmit={handlePageInputSubmit} className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground">Page</span>
+              <input
+                type="number"
+                value={pageInput}
+                onChange={handlePageInputChange}
+                className="w-20 px-3 py-2 border border-input rounded-md text-center bg-background"
+                min={1}
+                max={book.totalPages}
+              />
+              <span className="text-sm text-muted-foreground">of {book.totalPages}</span>
+            </form>
 
-          <button
-            onClick={handleNext}
-            disabled={currentPage === book.totalPages}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
-          >
-            Next
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-      </div>
+            <Button
+              onClick={handleNext}
+              disabled={currentPage === book.totalPages}
+              variant="outline"
+              size="lg"
+            >
+              Next
+              <ChevronRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Page Display */}
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <div className="relative">
-          {imageLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-          )}
-          <img
-            src={pagesApi.getPageImage(parseInt(bookId!), currentPage)}
-            alt={`Page ${currentPage}`}
-            className="w-full h-auto"
-            onLoad={() => setImageLoading(false)}
-            onError={(e) => {
-              setImageLoading(false);
-              e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"%3E%3Crect fill="%23ddd" width="800" height="1000"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EFailed to load page%3C/text%3E%3C/svg%3E';
-            }}
-          />
-        </div>
-      </div>
+      <Card>
+        <CardContent className="p-4">
+          <div className="relative">
+            {imageLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-muted">
+                <LoadingSpinner count={1} />
+              </div>
+            )}
+            <img
+              src={pagesApi.getPageImage(parseInt(bookId!), currentPage)}
+              alt={`Page ${currentPage}`}
+              className="w-full h-auto rounded-md"
+              onLoad={() => setImageLoading(false)}
+              onError={(e) => {
+                setImageLoading(false);
+                e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"%3E%3Crect fill="%23ddd" width="800" height="1000"/%3E%3Ctext fill="%23999" x="50%25" y="50%25" text-anchor="middle" dy=".3em"%3EFailed to load page%3C/text%3E%3C/svg%3E';
+              }}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Keyboard shortcuts hint */}
-      <div className="mt-4 text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-muted-foreground">
         Use arrow keys (← →) to navigate between pages
-      </div>
+      </p>
     </div>
   );
 }

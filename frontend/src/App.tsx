@@ -1,19 +1,42 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import HomePage from './pages/HomePage';
-import BookViewer from './pages/BookViewer';
-import AdminPage from './pages/AdminPage';
+import { lazy, Suspense } from 'react';
+import { MainLayout } from './components/layout/MainLayout';
+import { LoadingSpinner } from './components/shared/LoadingSpinner';
+
+// Lazy load pages for code splitting
+const HomePage = lazy(() => import('./pages/HomePage'));
+const BooksPage = lazy(() => import('./pages/BooksPage'));
+const TestsPage = lazy(() => import('./pages/TestsPage'));
+const BookViewer = lazy(() => import('./pages/BookViewer'));
+const AdminPage = lazy(() => import('./pages/AdminPage'));
+const BookManagementPage = lazy(() => import('./pages/BookManagementPage'));
+const ThemeTest = lazy(() => import('./pages/ThemeTest'));
 
 function App() {
   return (
     <Router>
-      <Layout>
+      <Suspense fallback={
+        <MainLayout>
+          <div className="flex justify-center items-center min-h-150">
+            <LoadingSpinner count={1} />
+          </div>
+        </MainLayout>
+      }>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/book/:bookId" element={<BookViewer />} />
-          <Route path="/admin" element={<AdminPage />} />
+          {/* Main routes with MainLayout */}
+          <Route path="/" element={<MainLayout><HomePage /></MainLayout>} />
+          <Route path="/books" element={<MainLayout><BooksPage /></MainLayout>} />
+          <Route path="/tests" element={<MainLayout><TestsPage /></MainLayout>} />
+          <Route path="/book/:bookId" element={<MainLayout><BookViewer /></MainLayout>} />
+          
+          {/* Admin routes */}
+          <Route path="/admin" element={<MainLayout><AdminPage /></MainLayout>} />
+          <Route path="/admin/books" element={<MainLayout><BookManagementPage /></MainLayout>} />
+          
+          {/* Theme test */}
+          <Route path="/theme-test" element={<MainLayout><ThemeTest /></MainLayout>} />
         </Routes>
-      </Layout>
+      </Suspense>
     </Router>
   );
 }
