@@ -67,23 +67,23 @@ export default function AdminPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password..."
-                className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-3 border border-input rounded focus:outline-none focus:ring-2 focus:ring-primary"
                 autoFocus
               />
             </div>
             {authError && (
-              <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
+              <div className="p-3 bg-destructive/10 border border-destructive text-destructive rounded text-sm">
                 {authError}
               </div>
             )}
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 px-4 rounded hover:bg-blue-700 font-medium"
+              className="w-full bg-primary text-primary-foreground py-3 px-4 rounded hover:bg-primary/90 font-medium"
             >
               Authenticate
             </button>
           </form>
-          <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded text-sm text-gray-600">
+          <div className="mt-4 p-3 bg-muted border border-border rounded text-sm text-muted-foreground">
             💡 Contact administrator to get password
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function AdminPage() {
         <h1 className="text-3xl font-bold">Admin Panel - Upload Books</h1>
         <a
           href="/admin/books"
-          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+          className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
         >
           📚 Manage Books
         </a>
@@ -262,34 +262,34 @@ export default function AdminPage() {
 
       {/* Messages */}
       {message && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div className="mb-4 p-4 bg-green-50 border border-green-500 text-green-700 rounded">
           {message}
         </div>
       )}
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive text-destructive rounded">
           {error}
         </div>
       )}
 
       {/* Progress Bar */}
       {uploading && (
-        <div className="mb-4 p-4 bg-blue-50 border border-blue-300 rounded-lg">
+        <div className="mb-4 p-4 bg-primary/5 border border-primary/20 rounded-lg">
           <div className="mb-2 flex justify-between items-center">
-            <span className="text-sm font-medium text-blue-700">{processingStep}</span>
-            <span className="text-sm font-bold text-blue-700">{uploadProgress}%</span>
+            <span className="text-sm font-medium text-primary">{processingStep}</span>
+            <span className="text-sm font-bold text-primary">{uploadProgress}%</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+          <div className="w-full bg-muted rounded-full h-4 overflow-hidden">
             <div
-              className="bg-blue-600 h-4 rounded-full transition-all duration-300 flex items-center justify-center"
+              className="bg-primary h-4 rounded-full transition-all duration-300 flex items-center justify-center"
               style={{ width: `${uploadProgress}%` }}
             >
               {uploadProgress > 10 && (
-                <span className="text-xs text-white font-semibold">{uploadProgress}%</span>
+                <span className="text-xs text-primary-foreground font-semibold">{uploadProgress}%</span>
               )}
             </div>
           </div>
-          <div className="mt-2 text-xs text-gray-600">
+          <div className="mt-2 text-xs text-muted-foreground">
             {uploadProgress < 100 ? (
               <p>⏳ Please wait, processing file...</p>
             ) : (
@@ -316,7 +316,7 @@ export default function AdminPage() {
               disabled={uploading}
             />
             {pdfFile && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Selected: {pdfFile.name} ({(pdfFile.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
@@ -331,7 +331,7 @@ export default function AdminPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Hackers TOEIC Reading"
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-input rounded"
               disabled={uploading}
             />
           </div>
@@ -343,7 +343,7 @@ export default function AdminPage() {
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value as 'book' | 'test')}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-input rounded"
               disabled={uploading}
             >
               <option value="book">Book</option>
@@ -368,7 +368,7 @@ export default function AdminPage() {
           <button
             type="submit"
             disabled={uploading || !pdfFile || !title}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-primary-foreground py-2 px-4 rounded hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed"
           >
             {uploading ? 'Uploading...' : 'Upload PDF'}
           </button>
@@ -397,7 +397,7 @@ export default function AdminPage() {
               className="w-full p-2 border border-gray-300 rounded"
               disabled={uploadingAudio}
             />
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
               Enter Book ID from PDF upload result above
             </p>
           </div>
@@ -411,11 +411,11 @@ export default function AdminPage() {
               type="file"
               accept=".mp3,.wav,.ogg,audio/*"
               onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-              className="w-full p-2 border border-gray-300 rounded"
+              className="w-full p-2 border border-input rounded"
               disabled={uploadingAudio}
             />
             {audioFile && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-muted-foreground mt-1">
                 Selected: {audioFile.name} ({(audioFile.size / 1024 / 1024).toFixed(2)} MB)
               </p>
             )}
@@ -424,7 +424,7 @@ export default function AdminPage() {
           <button
             type="submit"
             disabled={uploadingAudio || !audioFile || !bookIdForAudio}
-            className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:bg-muted disabled:cursor-not-allowed"
           >
             {uploadingAudio ? 'Uploading...' : 'Upload Audio'}
           </button>
@@ -452,7 +452,7 @@ export default function AdminPage() {
         <div className="space-y-2 text-sm font-mono">
           <p><strong>API URL:</strong> {API_URL}</p>
           <p><strong>Admin Key:</strong> {ADMIN_API_KEY.substring(0, 20)}...</p>
-          <p><strong>Swagger Docs:</strong> <a href={`${API_URL}/api`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{API_URL}/api</a></p>
+          <p><strong>Swagger Docs:</strong> <a href={`${API_URL}/api`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{API_URL}/api</a></p>
         </div>
       </div>
     </div>

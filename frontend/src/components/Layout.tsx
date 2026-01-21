@@ -12,18 +12,18 @@ function Layout({ children }: LayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">📚 TOEIC Master</h1>
+              <h1 className="text-2xl font-bold text-foreground">📚 TOEIC Master</h1>
             </Link>
             <nav className="flex gap-4">
               <Link 
                 to="/" 
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-foreground hover:text-primary font-medium"
               >
                 Home
               </Link>
               <Link 
                 to="/admin" 
-                className="text-gray-700 hover:text-blue-600 font-medium"
+                className="text-foreground hover:text-primary font-medium"
               >
                 🔧 Admin
               </Link>
@@ -36,7 +36,7 @@ function Layout({ children }: LayoutProps) {
       </main>
       <footer className="bg-white border-t mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <p className="text-center text-gray-500 text-sm">
+          <p className="text-center text-muted-foreground text-sm">
             © 2026 TOEIC Master - Free TOEIC Learning Platform
           </p>
         </div>

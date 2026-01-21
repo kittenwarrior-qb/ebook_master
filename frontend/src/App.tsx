@@ -10,7 +10,6 @@ const TestsPage = lazy(() => import('./pages/TestsPage'));
 const BookViewer = lazy(() => import('./pages/BookViewer'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const BookManagementPage = lazy(() => import('./pages/BookManagementPage'));
-const ThemeTest = lazy(() => import('./pages/ThemeTest'));
 
 function App() {
   return (
@@ -32,9 +31,6 @@ function App() {
           {/* Admin routes */}
           <Route path="/admin" element={<MainLayout><AdminPage /></MainLayout>} />
           <Route path="/admin/books" element={<MainLayout><BookManagementPage /></MainLayout>} />
-          
-          {/* Theme test */}
-          <Route path="/theme-test" element={<MainLayout><ThemeTest /></MainLayout>} />
         </Routes>
       </Suspense>
     </Router>

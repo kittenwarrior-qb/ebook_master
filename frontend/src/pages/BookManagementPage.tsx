@@ -237,14 +237,14 @@ export default function BookManagementPage() {
       <h1 className="text-3xl font-bold mb-8">📚 Book Management</h1>
 
       {message && (
-        <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div className="mb-4 p-4 bg-green-50 border border-green-500 text-green-700 rounded">
           {message}
           <button onClick={() => setMessage('')} className="float-right font-bold">×</button>
         </div>
       )}
 
       {error && (
-        <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-4 bg-destructive/10 border border-destructive text-destructive rounded">
           {error}
           <button onClick={() => setError('')} className="float-right font-bold">×</button>
         </div>
@@ -255,15 +255,15 @@ export default function BookManagementPage() {
         <div className="lg:col-span-1 bg-white shadow-md rounded-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Book List</h2>
           
-          {loading && <p className="text-gray-500">Loading...</p>}
+          {loading && <p className="text-muted-foreground">Loading...</p>}
           
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {books.map((book) => (
               <div
                 key={book.id}
                 onClick={() => fetchBookDetails(book.id)}
-                className={`p-3 border rounded cursor-pointer hover:bg-gray-50 ${
-                  selectedBook?.id === book.id ? 'bg-blue-50 border-blue-500' : ''
+                className={`p-3 border rounded cursor-pointer hover:bg-muted ${
+                  selectedBook?.id === book.id ? 'bg-primary/10 border-primary' : ''
                 }`}
               >
                 <div className="flex items-start gap-3">
@@ -276,10 +276,10 @@ export default function BookManagementPage() {
                   )}
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm truncate">{book.title}</h3>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       ID: {book.id} | {book.totalPages} pages
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {book.category === 'book' ? '📚 Book' : '📝 Test'}
                       {book.hasListening && ' | 🎵'}
                     </p>
@@ -293,7 +293,7 @@ export default function BookManagementPage() {
         {/* Book Details */}
         <div className="lg:col-span-2">
           {!selectedBook ? (
-            <div className="bg-white shadow-md rounded-lg p-6 text-center text-gray-500">
+            <div className="bg-white shadow-md rounded-lg p-6 text-center text-muted-foreground">
               Select a book to view details
             </div>
           ) : (
@@ -304,7 +304,7 @@ export default function BookManagementPage() {
                   <h2 className="text-2xl font-semibold">{selectedBook.title}</h2>
                   <button
                     onClick={() => handleDeleteBook(selectedBook.id)}
-                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    className="bg-destructive text-destructive-foreground px-4 py-2 rounded hover:bg-destructive/90"
                   >
                     🗑️ Delete Book
                   </button>
@@ -318,7 +318,7 @@ export default function BookManagementPage() {
                         type="text"
                         value={editTitle}
                         onChange={(e) => setEditTitle(e.target.value)}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border border-input rounded"
                       />
                     </div>
                     <div>
@@ -326,7 +326,7 @@ export default function BookManagementPage() {
                       <select
                         value={editCategory}
                         onChange={(e) => setEditCategory(e.target.value)}
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border border-input rounded"
                       >
                         <option value="book">Book</option>
                         <option value="test">Test</option>
@@ -344,13 +344,13 @@ export default function BookManagementPage() {
                     <div className="flex gap-2">
                       <button
                         onClick={handleUpdateBook}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
                       >
                         💾 Save
                       </button>
                       <button
                         onClick={() => setEditMode(false)}
-                        className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                        className="bg-muted text-muted-foreground px-4 py-2 rounded hover:bg-muted/80"
                       >
                         Cancel
                       </button>
@@ -358,24 +358,24 @@ export default function BookManagementPage() {
                   </div>
                 ) : (
                   <div>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-muted-foreground mb-2">
                       <strong>ID:</strong> {selectedBook.id}
                     </p>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-muted-foreground mb-2">
                       <strong>Category:</strong> {selectedBook.category === 'book' ? 'Book' : 'Test'}
                     </p>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-muted-foreground mb-2">
                       <strong>Total pages:</strong> {selectedBook.totalPages}
                     </p>
-                    <p className="text-gray-600 mb-2">
+                    <p className="text-muted-foreground mb-2">
                       <strong>Has audio:</strong> {selectedBook.hasListening ? 'Yes' : 'No'}
                     </p>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       <strong>Status:</strong> {selectedBook.processingStatus}
                     </p>
                     <button
                       onClick={() => setEditMode(true)}
-                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                      className="bg-primary text-primary-foreground px-4 py-2 rounded hover:bg-primary/90"
                     >
                       ✏️ Edit
                     </button>
@@ -389,7 +389,7 @@ export default function BookManagementPage() {
                 
                 {selectedBook.thumbnailUrl && (
                   <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Current thumbnail:</p>
+                    <p className="text-sm text-muted-foreground mb-2">Current thumbnail:</p>
                     <img
                       src={selectedBook.thumbnailUrl}
                       alt="Thumbnail"
@@ -432,7 +432,7 @@ export default function BookManagementPage() {
                           type="file"
                           accept="image/*"
                           onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border border-input rounded"
                         />
                         {thumbnailFile && (
                           <button
@@ -450,7 +450,7 @@ export default function BookManagementPage() {
                           value={thumbnailUrl}
                           onChange={(e) => setThumbnailUrl(e.target.value)}
                           placeholder="https://example.com/image.jpg"
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border border-input rounded"
                         />
                         {thumbnailUrl && (
                           <button
@@ -484,13 +484,13 @@ export default function BookManagementPage() {
                       <div className="space-y-1">
                         <button
                           onClick={() => handleSetPageAsThumbnail(page.pageNumber)}
-                          className="w-full text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                          className="w-full text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90"
                         >
                           Set as Thumbnail
                         </button>
                         <button
                           onClick={() => setReplacePageId(page.id)}
-                          className="w-full text-xs bg-orange-500 text-white px-2 py-1 rounded hover:bg-orange-600"
+                          className="w-full text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90"
                         >
                           Replace Image
                         </button>
@@ -538,7 +538,7 @@ export default function BookManagementPage() {
                           type="file"
                           accept="image/*"
                           onChange={(e) => setReplaceImageFile(e.target.files?.[0] || null)}
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border border-input rounded"
                         />
                       ) : (
                         <input
@@ -546,7 +546,7 @@ export default function BookManagementPage() {
                           value={replaceImageUrl}
                           onChange={(e) => setReplaceImageUrl(e.target.value)}
                           placeholder="https://example.com/image.jpg"
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border border-input rounded"
                         />
                       )}
                     </div>
@@ -558,7 +558,7 @@ export default function BookManagementPage() {
                           (replaceUploadMode === 'file' && !replaceImageFile) ||
                           (replaceUploadMode === 'url' && !replaceImageUrl)
                         }
-                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-gray-400"
+                        className="flex-1 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 disabled:bg-muted"
                       >
                         Replace
                       </button>
@@ -568,7 +568,7 @@ export default function BookManagementPage() {
                           setReplaceImageFile(null);
                           setReplaceImageUrl('');
                         }}
-                        className="flex-1 bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                        className="flex-1 bg-muted text-muted-foreground px-4 py-2 rounded hover:bg-muted/80"
                       >
                         Cancel
                       </button>

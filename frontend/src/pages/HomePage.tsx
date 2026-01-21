@@ -1,15 +1,10 @@
 import { useState, useEffect } from 'react';
-import { booksApi, type Book } from '../services/api';
-import BookCard from '../components/BookCard';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingSpinner } from '@/components/shared/LoadingSpinner';
 import { ErrorMessage } from '@/components/shared/ErrorMessage';
 import { Button } from '@/components/ui/button';
 
 function HomePage() {
-  const [books, setBooks] = useState<Book[]>([]);
-  const [tests, setTests] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,14 +15,6 @@ function HomePage() {
   const fetchBooks = async () => {
     try {
       setLoading(true);
-      const allBooks = await booksApi.getAll();
-      
-      // Separate books and tests
-      const booksList = allBooks.filter((book) => book.category === 'book');
-      const testsList = allBooks.filter((book) => book.category === 'test');
-      
-      setBooks(booksList);
-      setTests(testsList);
       setError(null);
     } catch (err) {
       setError('Failed to load books. Please try again later.');
@@ -70,50 +57,7 @@ function HomePage() {
         </CardHeader>
       </Card>
 
-      {/* Tabbed Content */}
-      <Tabs defaultValue="books" className="w-full">
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 h-auto">
-          <TabsTrigger value="books" className="py-3">
-            📚 Books ({books.length})
-          </TabsTrigger>
-          <TabsTrigger value="tests" className="py-3">
-            📝 Tests ({tests.length})
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="books" className="mt-6">
-          {books.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6 text-center text-muted-foreground py-12">
-                <p className="text-lg">No books have been added yet.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
-              {books.map((book) => (
-                <BookCard key={book.id} book={book} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="tests" className="mt-6">
-          {tests.length === 0 ? (
-            <Card>
-              <CardContent className="pt-6 text-center text-muted-foreground py-12">
-                <p className="text-lg">No tests have been added yet.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
-              {tests.map((test) => (
-                <BookCard key={test.id} book={test} />
-              ))}
-            </div>
-          )}
-        </TabsContent>
-      </Tabs>
-    </div>
+     </div>
   );
 }
 
